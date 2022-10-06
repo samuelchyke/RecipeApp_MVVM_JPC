@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/recipeListFragment">
+
+    <fragment
+        android:id="@+id/recipesFragment"
+        android:name="com.example.recipeapp_mvvm_jpc.RecipeFragment"
+        android:label="fragment_recipes" >
+    </fragment>
+    <fragment
+        android:id="@+id/recipeListFragment"
+        android:name="com.example.recipeapp_mvvm_jpc.RecipeListFragment"
+        android:label="fragment_recipe_list">
+
+        <action
+            android:id="@+id/navTo_RecipeFragment"
+            app:destination="@id/recipesFragment" />
+
+    </fragment>
+
+</navigation>
