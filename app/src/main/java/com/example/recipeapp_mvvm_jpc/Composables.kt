@@ -19,8 +19,10 @@ import com.example.recipeapp_mvvm_jpc.ui.theme.RecipeApp_MVVM_JPCTheme
 import com.example.recipeapp_mvvm_jpc.util.DEFAULT_RECIPE_IMAGE
 import com.example.recipeapp_mvvm_jpc.util.loadPicture
 import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.components.imageComponent
 import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.glide.GlideImage
+import com.skydoves.landscapist.placeholder.placeholder.PlaceholderPlugin
 import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -174,13 +176,19 @@ object Composables {
                             contentScale = ContentScale.Crop,
                             alignment = Alignment.Center
                         ),
+                        //Loading Image with shimmer
                         component = rememberImageComponent {
                             // shows a shimmering effect when loading an image.
-                            ShimmerPlugin(
-                                baseColor = Color.DarkGray,
-                                highlightColor = Color.Gray
+                            +ShimmerPlugin(
+                                baseColor = Color.Gray,
+                                highlightColor = Color.White
                             )
                         }
+                        //Loading Image with placeholder
+//                        component = imageComponent {
+//                            +PlaceholderPlugin.Loading(painterResource(id = R.drawable.empty_plate))
+//                            +PlaceholderPlugin.Failure(painterResource(id = R.drawable.empty_plate))
+//                        }
                     )
                 }
                 Row(
