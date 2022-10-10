@@ -2,31 +2,38 @@ package com.example.recipeapp_mvvm_jpc
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.recipeapp_mvvm_jpc.model.Recipe
 import com.example.recipeapp_mvvm_jpc.ui.theme.RecipeApp_MVVM_JPCTheme
+import com.example.recipeapp_mvvm_jpc.util.DEFAULT_RECIPE_IMAGE
+import com.example.recipeapp_mvvm_jpc.util.loadPicture
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.components.rememberImageComponent
+import com.skydoves.landscapist.glide.GlideImage
+import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object Composables {
 
     @Composable
-    fun ColumnExample(){
+    fun ColumnExample() {
         Surface(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .background(Color(0xFFF2F2F2))
         ) {
-            Column{
+            Column {
                 Image(
                     painter = painterResource(
                         id = R.drawable.ic_launcher_background
@@ -37,12 +44,12 @@ object Composables {
                     contentScale = ContentScale.Crop,
                     contentDescription = null
                 )
-                Row (
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                ){
+                ) {
                     Text(
                         text = "Hello",
                         style = TextStyle(
@@ -58,8 +65,10 @@ object Composables {
                 Spacer(modifier = Modifier.padding(10.dp))
                 Text(text = "Ohayo")
                 Spacer(modifier = Modifier.padding(10.dp))
-                Button(onClick = {},
-                    modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Button(
+                    onClick = {},
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
                     Text(text = "Yooo")
                 }
 
@@ -69,7 +78,7 @@ object Composables {
     }
 
     @Composable
-    fun RowExample(){
+    fun RowExample() {
         Column {
             Row(
                 modifier = Modifier
@@ -79,7 +88,8 @@ object Composables {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text(text = "Item 1",
+                Text(
+                    text = "Item 1",
                     modifier = Modifier.align(Alignment.CenterVertically)
                 )
             }
@@ -92,10 +102,12 @@ object Composables {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text(text = "Item 2",
+                Text(
+                    text = "Item 2",
 //                modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                Text(text = "Item 2",
+                Text(
+                    text = "Item 2",
 //                modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
@@ -110,7 +122,7 @@ object Composables {
                 .verticalScroll(rememberScrollState())
                 .background(Color(0xFFF2F2F2))
         ) {
-            Column{
+            Column {
                 Image(
                     painter = painterResource(
                         id = R.drawable.ic_launcher_background
@@ -137,14 +149,142 @@ object Composables {
 
     }
 
+    @Composable
+    fun RecipeCard(
+        recipe: Recipe,
+        onClick: () -> Unit
+    ) {
+        Card(
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier
+                .padding(
+                    bottom = 6.dp,
+                    top = 6.dp
+                )
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
+            elevation = 8.dp
+        ) {
+            Column {
+                recipe.featured_image?.let { url ->
+                    GlideImage(
+                        imageModel = url,
+                        modifier = Modifier.fillMaxWidth().height(225.dp),
+                        imageOptions = ImageOptions(
+                            contentScale = ContentScale.Crop,
+                            alignment = Alignment.Center
+                        ),
+                        component = rememberImageComponent {
+                            // shows a shimmering effect when loading an image.
+                            ShimmerPlugin(
+                                baseColor = Color.DarkGray,
+                                highlightColor = Color.Gray
+                            )
+                        }
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(
+                            top = 10.dp,
+                            bottom = 10.dp,
+                            start = 8.dp,
+                            end = 8.dp
+                        )
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = recipe.title,
+                        modifier = Modifier
+                            .fillMaxWidth(0.50f)
+                            .wrapContentWidth(Alignment.Start),
+                        style = MaterialTheme.typography.h5
+                    )
+                    Text(
+                        text = "Rating: ${recipe.rating}/100",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.End)
+                            .align(Alignment.CenterVertically),
+                        style = MaterialTheme.typography.h5
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun RecipeCard2(
+        recipe: Recipe,
+        onClick: () -> Unit
+    ) {
+        Card(
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier
+                .padding(
+                    bottom = 6.dp,
+                    top = 6.dp
+                )
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
+            elevation = 8.dp
+        ) {
+            Column {
+                recipe.featured_image?.let { url ->
+                    val image = loadPicture(url = url, defaultImage = DEFAULT_RECIPE_IMAGE)
+                        .value
+                    image?.let { img ->
+                        Image(
+                            bitmap = img.asImageBitmap(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(225.dp),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "emptyPlate"
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(
+                            top = 10.dp,
+                            bottom = 10.dp,
+                            start = 8.dp,
+                            end = 8.dp
+                        )
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = recipe.title,
+                        modifier = Modifier
+                            .fillMaxWidth(0.50f)
+                            .wrapContentWidth(Alignment.Start),
+                        style = MaterialTheme.typography.h5
+                    )
+                    Text(
+                        text = "Rating: ${recipe.rating}/100",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.End)
+                            .align(Alignment.CenterVertically),
+                        style = MaterialTheme.typography.h5
+                    )
+                }
+
+            }
+
+        }
+    }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     RecipeApp_MVVM_JPCTheme {
 //        Greeting("Android")
-        Composables.ColumnExample()
+//        Composables.ColumnExample()
 //        RowExample()
+
     }
 }

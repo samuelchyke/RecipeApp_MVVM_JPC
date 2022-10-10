@@ -13,12 +13,12 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.recipeapp_mvvm_jpc"
         minSdk 26
-        targetSdk 32
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 
@@ -64,7 +64,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.3.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    def compose = "1.1.0-beta01"
+    def compose = "1.2.0-beta01"
     implementation "androidx.compose.foundation:foundation:$compose"
     implementation "androidx.compose.runtime:runtime-livedata:$compose"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose"
@@ -121,6 +121,13 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.3"
 
+    def glide = "4.11.0"
+    implementation "com.github.bumptech.glide:glide:$glide"
+    kapt "com.github.bumptech.glide:compiler:$glide"
+
+    //Image Loading
+    implementation "com.github.skydoves:landscapist-glide:2.0.0"
+    implementation "com.github.skydoves:landscapist-placeholder:2.0.0"
 
 
 }

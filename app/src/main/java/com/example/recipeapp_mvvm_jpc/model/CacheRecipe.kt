@@ -15,7 +15,7 @@ data class CacheRecipe(
     val date_added: String,
     val date_updated: String,
     val description: String,
-    val featured_image: String,
+    val featured_image: String?,
     val ingredients: String,
     val long_date_added: Int,
     val long_date_updated: Int,

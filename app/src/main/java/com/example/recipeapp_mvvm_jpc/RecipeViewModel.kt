@@ -1,9 +1,12 @@
 package com.example.recipeapp_mvvm_jpc
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recipeapp_mvvm_jpc.model.Recipe
 import com.example.recipeapp_mvvm_jpc.model.RecipeResult
 import com.example.recipeapp_mvvm_jpc.repository.NetworkRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,12 +23,16 @@ class RecipeViewModel @Inject constructor(
        searchRecipes("pasta")
    }
 
-   private val _recipe : MutableLiveData<Response<RecipeResult>> = MutableLiveData()
-   val recipe : LiveData<Response<RecipeResult>> get() = _recipe
+//   private val _recipe : MutableLiveData<Response<RecipeResult>> = MutableLiveData()
+//   val recipe : LiveData<Response<RecipeResult>> get() = _recipe
 
-   private fun searchRecipes(name: String)= viewModelScope.launch{
+    val _recipe : MutableState<List<Recipe>> = mutableStateOf(listOf())
+
+    private fun searchRecipes(name: String) = viewModelScope.launch{
          val response = networkRepository.getListOfRecipes(name)
-         _recipe.postValue(response)
+        response.body()?.let {
+            _recipe.value = it.results
+         }
       }
 
 }

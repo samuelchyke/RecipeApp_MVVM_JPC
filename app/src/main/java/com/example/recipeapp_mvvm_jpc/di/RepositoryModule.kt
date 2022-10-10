@@ -14,11 +14,11 @@ abstract class RepositoryModule {
 
     @Binds
     @ViewModelScoped
-    abstract fun provideNetworkBeerRepository(networkRepositoryImpl: NetworkRepositoryImpl): NetworkRepository
+    abstract fun provideNetworkRepository(networkRepositoryImpl: NetworkRepositoryImpl): NetworkRepository
 
 //    @Binds
 //    @ViewModelScoped
-//    abstract fun provideCacheBeerRepository(cacheBeerRepositoryImpl: CacheBeerRepositoryImpl): CacheBeerRepository
+//    abstract fun provideCacheRepository(cacheRepositoryImpl: CacheRepositoryImpl): CacheRepository
 
 
 }
