@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp_mvvm_jpc.model.Recipe
+import com.example.recipeapp_mvvm_jpc.presentation.ui.recipelist.FoodCategory
+import com.example.recipeapp_mvvm_jpc.presentation.ui.recipelist.getFoodCategory
 import com.example.recipeapp_mvvm_jpc.repository.NetworkRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,9 +19,9 @@ class RecipeViewModel @Inject constructor(
 
     val recipe: MutableState<List<Recipe>> = mutableStateOf(listOf())
 
-    val query = mutableStateOf("")
+    val selectedCategory: MutableState<FoodCategory?> = mutableStateOf(null)
 
-    val chip = mutableStateOf(0)
+    val query = mutableStateOf("")
 
     init {
         searchRecipes()
@@ -36,8 +38,14 @@ class RecipeViewModel @Inject constructor(
         this.query.value = query
     }
 
-    fun onChipSelected(chip: Int) {
-        this.chip.value = chip
+    fun onSelectedCategoryChanged(category: String) {
+        val newCategory = getFoodCategory(category)
+        this.selectedCategory.value = newCategory
+        onQueryChanged(category)
+    }
+
+    fun onClearSelectedCategory() {
+        this.selectedCategory.value = null
     }
 
 }

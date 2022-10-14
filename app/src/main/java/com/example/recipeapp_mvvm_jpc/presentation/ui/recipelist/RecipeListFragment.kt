@@ -38,13 +38,12 @@ class RecipeListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         // Inflate the layout for this fragment
         return ComposeView(requireContext()).apply {
             setContent {
                 val result = recipeViewModel.recipe.value
                 val query = recipeViewModel.query.value
-                val focusedChip = recipeViewModel.chip.value
+                val selectedCategory = recipeViewModel.selectedCategory.value
                 val focusManager = LocalFocusManager.current
                 Column {
                     Surface(
@@ -78,31 +77,32 @@ class RecipeListFragment : Fragment() {
                                         onDone = {
                                             recipeViewModel.searchRecipes()
                                             focusManager.clearFocus()
-                                            recipeViewModel.onChipSelected(0)
+                                            recipeViewModel.onClearSelectedCategory()
                                         }
                                     ),
                                 )
                             }
                             ScrollableTabRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                selectedTabIndex = focusedChip,
+                                modifier = Modifier.fillMaxWidth().padding(top = 2.dp, bottom = 2.dp),
+                                selectedTabIndex = 0,
                                 edgePadding = 2.dp,
                                 indicator = {
                                     TabRowDefaults.Indicator(
                                         color = Color.White,
                                         height = 0.dp,
-                                        modifier = Modifier.tabIndicatorOffset(it[focusedChip])
+                                        modifier = Modifier.tabIndicatorOffset(it[0])
                                     )
                                 }
                             ) {
                                 for (category in getAllFoodCategories()){
                                     FoodCategoryChip(
                                         category = category.value,
-                                        onExecuteSearch = {
-                                            recipeViewModel.onChipSelected(category.ordinal)
-                                            recipeViewModel.onQueryChanged(it)
-                                            recipeViewModel.searchRecipes()
+                                        isSelected = selectedCategory == category,
+                                        onExecuteSearch = recipeViewModel::searchRecipes,
+                                        onSearchCategoryChanged = {
+                                            recipeViewModel.onSelectedCategoryChanged(it)
                                         }
+
                                     )
                                 }
                             }
@@ -117,6 +117,5 @@ class RecipeListFragment : Fragment() {
             }
         }
     }
-
 }
 
