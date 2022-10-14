@@ -1,4 +1,4 @@
-package com.example.recipeapp_mvvm_jpc
+package com.example.recipeapp_mvvm_jpc.presentation.ui.recipe
 
 import android.os.Bundle
 import android.view.LayoutInflater

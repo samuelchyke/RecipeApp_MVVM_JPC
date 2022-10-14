@@ -6,12 +6,12 @@
 
     <fragment
         android:id="@+id/recipesFragment"
-        android:name="com.example.recipeapp_mvvm_jpc.RecipeFragment"
+        android:name="com.example.recipeapp_mvvm_jpc.presentation.ui.recipe.RecipeFragment"
         android:label="fragment_recipes" >
     </fragment>
     <fragment
         android:id="@+id/recipeListFragment"
-        android:name="com.example.recipeapp_mvvm_jpc.RecipeListFragment"
+        android:name="com.example.recipeapp_mvvm_jpc.presentation.ui.recipelist.RecipeListFragment"
         android:label="fragment_recipe_list">
 
         <action

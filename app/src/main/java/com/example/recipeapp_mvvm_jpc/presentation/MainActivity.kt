@@ -1,7 +1,8 @@
-package com.example.recipeapp_mvvm_jpc
+package com.example.recipeapp_mvvm_jpc.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.recipeapp_mvvm_jpc.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

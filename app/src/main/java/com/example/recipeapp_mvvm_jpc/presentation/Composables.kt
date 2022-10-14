@@ -1,4 +1,4 @@
-package com.example.recipeapp_mvvm_jpc
+package com.example.recipeapp_mvvm_jpc.presentation
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -14,17 +14,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.recipeapp_mvvm_jpc.R
 import com.example.recipeapp_mvvm_jpc.model.Recipe
 import com.example.recipeapp_mvvm_jpc.ui.theme.RecipeApp_MVVM_JPCTheme
 import com.example.recipeapp_mvvm_jpc.util.DEFAULT_RECIPE_IMAGE
 import com.example.recipeapp_mvvm_jpc.util.loadPicture
 import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.components.imageComponent
 import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.glide.GlideImage
-import com.skydoves.landscapist.placeholder.placeholder.PlaceholderPlugin
 import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object Composables {
 
@@ -216,6 +214,36 @@ object Composables {
                         style = MaterialTheme.typography.h5
                     )
                 }
+            }
+        }
+    }
+
+    @Composable
+    fun FoodCategoryChip(
+        category: String,
+        onExecuteSearch: (String) -> Unit,
+    ){
+        Surface(
+            modifier = Modifier.padding(end = 8.dp),
+            elevation = 8.dp,
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colors.primary
+        ) {
+            Row(
+                modifier = Modifier.clickable(
+                    onClick = {
+                        onExecuteSearch(category)
+                    }
+                ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = category,
+                    style = MaterialTheme.typography.body2,
+                    color = Color.White,
+                    modifier = Modifier.padding(8.dp).align(Alignment.CenterVertically)
+                )
             }
         }
     }
