@@ -21,6 +21,8 @@ class RecipeViewModel @Inject constructor(
 
     val selectedCategory: MutableState<FoodCategory?> = mutableStateOf(null)
 
+    val scrollTabPosition = mutableStateOf(0)
+
     val query = mutableStateOf("")
 
     init {
@@ -41,11 +43,19 @@ class RecipeViewModel @Inject constructor(
     fun onSelectedCategoryChanged(category: String) {
         val newCategory = getFoodCategory(category)
         this.selectedCategory.value = newCategory
+        this.scrollTabPosition.value = newCategory!!.ordinal
         onQueryChanged(category)
     }
 
     fun onClearSelectedCategory() {
-        this.selectedCategory.value = null
+        if (query.value != selectedCategory.value?.value){
+            this.selectedCategory.value = null
+            this.scrollTabPosition.value = 0
+        }
+        val newCategory = getFoodCategory(query.value)
+        if (newCategory != null){
+            onSelectedCategoryChanged(query.value)
+        }
     }
 
 }

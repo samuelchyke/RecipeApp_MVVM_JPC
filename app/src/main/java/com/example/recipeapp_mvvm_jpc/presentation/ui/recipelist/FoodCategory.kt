@@ -24,7 +24,7 @@ fun getFoodCategory(value: String): FoodCategory? {
     return map[value]
 }
 
-fun getSelectedFoodCategory(value: String): Int {
+fun getSelectedFoodCategory(value: String): Int? {
     val map = values().associateBy(FoodCategory::value)
-    return map[value]?.numb ?: 0
+    return map[value]?.numb
 }

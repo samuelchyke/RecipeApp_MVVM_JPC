@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -44,6 +45,7 @@ class RecipeListFragment : Fragment() {
                 val result = recipeViewModel.recipe.value
                 val query = recipeViewModel.query.value
                 val selectedCategory = recipeViewModel.selectedCategory.value
+                val selectedChip = recipeViewModel.scrollTabPosition.value
                 val focusManager = LocalFocusManager.current
                 Column {
                     Surface(
@@ -82,9 +84,12 @@ class RecipeListFragment : Fragment() {
                                     ),
                                 )
                             }
+
                             ScrollableTabRow(
-                                modifier = Modifier.fillMaxWidth().padding(top = 2.dp, bottom = 2.dp),
-                                selectedTabIndex = 0,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 2.dp, bottom = 2.dp),
+                                selectedTabIndex = selectedChip,
                                 edgePadding = 2.dp,
                                 indicator = {
                                     TabRowDefaults.Indicator(
