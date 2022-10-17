@@ -2,6 +2,7 @@ package com.example.recipeapp_mvvm_jpc.presentation
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp_mvvm_jpc.model.Recipe

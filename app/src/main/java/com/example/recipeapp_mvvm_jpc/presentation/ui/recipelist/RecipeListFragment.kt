@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.activityViewModels
 import com.example.recipeapp_mvvm_jpc.presentation.Composables
 import com.example.recipeapp_mvvm_jpc.presentation.Composables.FoodCategoryChip
+import com.example.recipeapp_mvvm_jpc.presentation.Composables.SearchAppBar
 import com.example.recipeapp_mvvm_jpc.presentation.RecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,71 +49,16 @@ class RecipeListFragment : Fragment() {
                 val selectedChip = recipeViewModel.scrollTabPosition.value
                 val focusManager = LocalFocusManager.current
                 Column {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        color = MaterialTheme.colors.primary,
-                        elevation = 8.dp,
-                    ){
-                        Column {
-                            Row(modifier = Modifier.fillMaxWidth()){
-                                TextField(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    value = query,
-                                    onValueChange = {
-                                        recipeViewModel.onQueryChanged(it)
-                                    },
-                                    label = {
-                                        Text(text = "Search")
-                                    },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Filled.Search,
-                                            contentDescription = "Search Image"
-                                        )
-                                    },
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Done,
-                                    ),
-                                    keyboardActions = KeyboardActions(
-                                        onDone = {
-                                            recipeViewModel.searchRecipes()
-                                            focusManager.clearFocus()
-                                            recipeViewModel.onClearSelectedCategory()
-                                        }
-                                    ),
-                                )
-                            }
-
-                            ScrollableTabRow(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 2.dp, bottom = 2.dp),
-                                selectedTabIndex = selectedChip,
-                                edgePadding = 2.dp,
-                                indicator = {
-                                    TabRowDefaults.Indicator(
-                                        color = Color.White,
-                                        height = 0.dp,
-                                        modifier = Modifier.tabIndicatorOffset(it[0])
-                                    )
-                                }
-                            ) {
-                                for (category in getAllFoodCategories()){
-                                    FoodCategoryChip(
-                                        category = category.value,
-                                        isSelected = selectedCategory == category,
-                                        onExecuteSearch = recipeViewModel::searchRecipes,
-                                        onSearchCategoryChanged = {
-                                            recipeViewModel.onSelectedCategoryChanged(it)
-                                        }
-
-                                    )
-                                }
-                            }
-                        }
-                    }
+                    SearchAppBar(
+                        query = query,
+                        selectedCategory = selectedCategory,
+                        selectedChip = selectedChip ,
+                        onQueryChanged = recipeViewModel::onQueryChanged,
+                        onExecuteSearch = recipeViewModel::searchRecipes,
+                        clearFocus = focusManager::clearFocus,
+                        onClearSelectedCategory = recipeViewModel::onClearSelectedCategory,
+                        onSelectedCategoryChanged = recipeViewModel::onSelectedCategoryChanged
+                    )
                     LazyColumn{
                         itemsIndexed(items = result){ _, recipe ->
                             Composables.RecipeCard(recipe = recipe, onClick = {})
