@@ -8,25 +8,12 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.activityViewModels
 import com.example.recipeapp_mvvm_jpc.presentation.Composables
-import com.example.recipeapp_mvvm_jpc.presentation.Composables.FoodCategoryChip
+import com.example.recipeapp_mvvm_jpc.presentation.Composables.CircularIndeterminateProgressBar
 import com.example.recipeapp_mvvm_jpc.presentation.Composables.SearchAppBar
 import com.example.recipeapp_mvvm_jpc.presentation.RecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,6 +34,7 @@ class RecipeListFragment : Fragment() {
                 val query = recipeViewModel.query.value
                 val selectedCategory = recipeViewModel.selectedCategory.value
                 val selectedChip = recipeViewModel.scrollTabPosition.value
+                val loading = recipeViewModel.loading.value
                 val focusManager = LocalFocusManager.current
                 Column {
                     SearchAppBar(
@@ -56,14 +44,20 @@ class RecipeListFragment : Fragment() {
                         onQueryChanged = recipeViewModel::onQueryChanged,
                         onExecuteSearch = recipeViewModel::searchRecipes,
                         clearFocus = focusManager::clearFocus,
-                        onClearSelectedCategory = recipeViewModel::onClearSelectedCategory,
+                        onClearSelectedCategory = recipeViewModel::clearSelectedCategory,
                         onSelectedCategoryChanged = recipeViewModel::onSelectedCategoryChanged
                     )
-                    LazyColumn{
-                        itemsIndexed(items = result){ _, recipe ->
-                            Composables.RecipeCard(recipe = recipe, onClick = {})
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        LazyColumn{
+                            itemsIndexed(items = result){ _, recipe ->
+                                Composables.RecipeCard(recipe = recipe, onClick = {})
+                            }
                         }
+                        CircularIndeterminateProgressBar(isDisplayed = loading)
                     }
+
                 }
             }
         }

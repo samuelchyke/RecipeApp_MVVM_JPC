@@ -406,6 +406,22 @@ object Composables {
 
         }
     }
+
+    @Composable
+    fun CircularIndeterminateProgressBar(isDisplayed: Boolean) {
+        if (isDisplayed) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.primary
+                )
+            }
+        }
+    }
 }
 
 

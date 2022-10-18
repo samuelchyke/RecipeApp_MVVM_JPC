@@ -2,7 +2,6 @@ package com.example.recipeapp_mvvm_jpc.presentation
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp_mvvm_jpc.model.Recipe
@@ -24,6 +23,8 @@ class RecipeViewModel @Inject constructor(
 
     val scrollTabPosition = mutableStateOf(0)
 
+    val loading = mutableStateOf(false)
+
     val query = mutableStateOf("")
 
     init {
@@ -31,10 +32,13 @@ class RecipeViewModel @Inject constructor(
     }
 
     fun searchRecipes() = viewModelScope.launch {
+        loading.value = true
+        clearRecipeList()
         val response = networkRepository.getListOfRecipes(query.value)
         response.body()?.let {
             recipe.value = it.results
         }
+        loading.value = false
     }
 
     fun onQueryChanged(query: String) {
@@ -48,7 +52,7 @@ class RecipeViewModel @Inject constructor(
         onQueryChanged(category)
     }
 
-    fun onClearSelectedCategory() {
+    fun clearSelectedCategory() {
         if (query.value != selectedCategory.value?.value){
             this.selectedCategory.value = null
             this.scrollTabPosition.value = 0
@@ -57,6 +61,10 @@ class RecipeViewModel @Inject constructor(
         if (newCategory != null){
             onSelectedCategoryChanged(query.value)
         }
+    }
+
+    private fun clearRecipeList(){
+        recipe.value = listOf()
     }
 
 }
