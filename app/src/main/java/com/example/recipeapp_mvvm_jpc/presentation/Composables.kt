@@ -2,6 +2,8 @@ package com.example.recipeapp_mvvm_jpc.presentation
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,12 +24,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.example.recipeapp_mvvm_jpc.R
 import com.example.recipeapp_mvvm_jpc.model.Recipe
-import com.example.recipeapp_mvvm_jpc.presentation.ui.recipelist.FoodCategory
-import com.example.recipeapp_mvvm_jpc.presentation.ui.recipelist.getAllFoodCategories
+import com.example.recipeapp_mvvm_jpc.presentation.ui.recipelist.RecipeListFragmentDirections
 import com.example.recipeapp_mvvm_jpc.ui.theme.RecipeApp_MVVM_JPCTheme
 import com.example.recipeapp_mvvm_jpc.util.DEFAULT_RECIPE_IMAGE
+import com.example.recipeapp_mvvm_jpc.util.FoodCategory
+import com.example.recipeapp_mvvm_jpc.util.getAllFoodCategories
 import com.example.recipeapp_mvvm_jpc.util.loadPicture
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.components.rememberImageComponent
@@ -408,6 +413,39 @@ object Composables {
     }
 
     @Composable
+    fun RecipeList(
+        loading: Boolean,
+        recipes: List<Recipe>,
+        onChangeScrollPosition: (Int) -> Unit,
+        page: Int,
+        onTriggerNextPage: () -> Unit,
+        navController: NavController,
+    ){
+        Box(
+            modifier = Modifier.background(color = MaterialTheme.colors.surface)
+        ) {
+                LazyColumn {
+                    itemsIndexed(
+                        items = recipes
+                    ) { index, recipe ->
+                        onChangeScrollPosition(index)
+                        if ((index + 1) >= (page * PAGE_SIZE) && !loading) {
+                            onTriggerNextPage()
+                        }
+                        RecipeCard(
+                            recipe = recipe,
+                            onClick = {
+                                val nav = RecipeListFragmentDirections.navToRecipeFragment(recipe)
+                                navController.navigate(nav)
+                            }
+                        )
+                    }
+                    }
+                }
+                CircularIndeterminateProgressBar(isDisplayed = loading)
+    }
+
+    @Composable
     fun CircularIndeterminateProgressBar(isDisplayed: Boolean) {
         if (isDisplayed) {
             Row(
@@ -422,7 +460,14 @@ object Composables {
             }
         }
     }
+
 }
+
+
+
+
+
+
 
 
 @Preview(showBackground = true)

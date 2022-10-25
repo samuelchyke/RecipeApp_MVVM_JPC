@@ -1,6 +1,6 @@
-package com.example.recipeapp_mvvm_jpc.presentation.ui.recipelist
+package com.example.recipeapp_mvvm_jpc.util
 
-import com.example.recipeapp_mvvm_jpc.presentation.ui.recipelist.FoodCategory.*
+import com.example.recipeapp_mvvm_jpc.util.FoodCategory.*
 
 enum class FoodCategory(val value: String, val numb : Int){
     CHICKEN("Chicken",0),

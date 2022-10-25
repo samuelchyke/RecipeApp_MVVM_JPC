@@ -7,7 +7,13 @@
     <fragment
         android:id="@+id/recipesFragment"
         android:name="com.example.recipeapp_mvvm_jpc.presentation.ui.recipe.RecipeFragment"
-        android:label="fragment_recipes" >
+        android:label="fragment_recipes"
+        >
+
+        <argument
+            android:name="recipeArg"
+            app:argType="com.example.recipeapp_mvvm_jpc.model.Recipe" />
+
     </fragment>
     <fragment
         android:id="@+id/recipeListFragment"
@@ -17,6 +23,7 @@
         <action
             android:id="@+id/navTo_RecipeFragment"
             app:destination="@id/recipesFragment" />
+
 
     </fragment>
 

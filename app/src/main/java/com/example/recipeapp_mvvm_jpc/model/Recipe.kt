@@ -1,5 +1,9 @@
 package com.example.recipeapp_mvvm_jpc.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Recipe(
     val cooking_instructions: String,
     val date_added: String,
@@ -14,7 +18,7 @@ data class Recipe(
     val rating: Int,
     val source_url: String,
     val title: String
-)
+): Parcelable
 
 //fun Recipe.listToString() : String{
 //    return this.ingredients.toString()

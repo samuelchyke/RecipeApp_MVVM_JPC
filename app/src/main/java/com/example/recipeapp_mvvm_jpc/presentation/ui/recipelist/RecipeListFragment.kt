@@ -8,20 +8,24 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import com.example.recipeapp_mvvm_jpc.presentation.Composables
 import com.example.recipeapp_mvvm_jpc.presentation.Composables.CircularIndeterminateProgressBar
+import com.example.recipeapp_mvvm_jpc.presentation.Composables.RecipeList
 import com.example.recipeapp_mvvm_jpc.presentation.Composables.SearchAppBar
+import com.example.recipeapp_mvvm_jpc.presentation.PAGE_SIZE
 import com.example.recipeapp_mvvm_jpc.presentation.RecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
 
-    private val recipeViewModel : RecipeViewModel by activityViewModels()
+    private val recipeViewModel: RecipeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,29 +39,35 @@ class RecipeListFragment : Fragment() {
                 val selectedCategory = recipeViewModel.selectedCategory.value
                 val selectedChip = recipeViewModel.scrollTabPosition.value
                 val loading = recipeViewModel.loading.value
+                val page = recipeViewModel.page.value
                 val focusManager = LocalFocusManager.current
-                Column {
-                    SearchAppBar(
-                        query = query,
-                        selectedCategory = selectedCategory,
-                        selectedChip = selectedChip ,
-                        onQueryChanged = recipeViewModel::onQueryChanged,
-                        onExecuteSearch = recipeViewModel::searchRecipes,
-                        clearFocus = focusManager::clearFocus,
-                        onClearSelectedCategory = recipeViewModel::clearSelectedCategory,
-                        onSelectedCategoryChanged = recipeViewModel::onSelectedCategoryChanged
-                    )
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        LazyColumn{
-                            itemsIndexed(items = result){ _, recipe ->
-                                Composables.RecipeCard(recipe = recipe, onClick = {})
-                            }
-                        }
-                        CircularIndeterminateProgressBar(isDisplayed = loading)
-                    }
 
+                Scaffold(
+                    topBar = {
+                        SearchAppBar(
+                            query = query,
+                            selectedCategory = selectedCategory,
+                            selectedChip = selectedChip,
+                            onQueryChanged = recipeViewModel::onQueryChanged,
+                            onExecuteSearch = recipeViewModel::searchRecipes,
+                            clearFocus = focusManager::clearFocus,
+                            onClearSelectedCategory = recipeViewModel::clearSelectedCategory,
+                            onSelectedCategoryChanged = recipeViewModel::onSelectedCategoryChanged
+                        )
+                    }
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize().padding(it)
+                    ) {
+                        RecipeList(
+                            loading = loading,
+                            recipes = result,
+                            onChangeScrollPosition = recipeViewModel::onChangedRecipeResultPosition,
+                            page = page,
+                            onTriggerNextPage = { recipeViewModel.nextPage() },
+                            navController = findNavController()
+                        )
+                    }
                 }
             }
         }

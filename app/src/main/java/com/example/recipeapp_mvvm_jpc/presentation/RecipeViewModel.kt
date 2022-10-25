@@ -5,12 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp_mvvm_jpc.model.Recipe
-import com.example.recipeapp_mvvm_jpc.presentation.ui.recipelist.FoodCategory
-import com.example.recipeapp_mvvm_jpc.presentation.ui.recipelist.getFoodCategory
 import com.example.recipeapp_mvvm_jpc.repository.NetworkRepository
+import com.example.recipeapp_mvvm_jpc.util.FoodCategory
+import com.example.recipeapp_mvvm_jpc.util.getFoodCategory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+const val PAGE_SIZE = 30
 
 @HiltViewModel
 class RecipeViewModel @Inject constructor(
@@ -27,6 +29,10 @@ class RecipeViewModel @Inject constructor(
 
     val query = mutableStateOf("")
 
+    val page = mutableStateOf(1)
+
+    private var recipeListScrollPosition = 0
+
     init {
         searchRecipes()
     }
@@ -34,11 +40,43 @@ class RecipeViewModel @Inject constructor(
     fun searchRecipes() = viewModelScope.launch {
         loading.value = true
         clearRecipeList()
-        val response = networkRepository.getListOfRecipes(query.value)
+        val response = networkRepository.getListOfRecipes(query.value,page.value)
         response.body()?.let {
             recipe.value = it.results
         }
         loading.value = false
+    }
+
+    fun nextPage(){
+        viewModelScope.launch {
+            // prevent duplicate event due to recompose happening to quickly
+            if((recipeListScrollPosition + 1) >= (page.value * PAGE_SIZE) ){
+                loading.value = true
+                incrementPage()
+
+                if(page.value > 1){
+                    val response = networkRepository.getListOfRecipes(query.value,page.value)
+                    response.body()?.let {
+                        appendRecipes(it.results)
+                    }
+                }
+                loading.value = false
+            }
+        }
+    }
+
+    private fun appendRecipes(recipes: List<Recipe>){
+        val currentList = ArrayList(this.recipe.value)
+        currentList.addAll(recipes)
+        this.recipe.value = currentList
+    }
+
+    private fun incrementPage(){
+        page.value ++
+    }
+
+    fun onChangedRecipeResultPosition(position: Int){
+        recipeListScrollPosition = position
     }
 
     fun onQueryChanged(query: String) {
@@ -46,9 +84,10 @@ class RecipeViewModel @Inject constructor(
     }
 
     fun onSelectedCategoryChanged(category: String) {
+        this.page.value = 1
         val newCategory = getFoodCategory(category)
         this.selectedCategory.value = newCategory
-        this.scrollTabPosition.value = newCategory!!.ordinal
+        this.scrollTabPosition.value = newCategory?.ordinal ?: 0
         onQueryChanged(category)
     }
 
@@ -56,6 +95,8 @@ class RecipeViewModel @Inject constructor(
         if (query.value != selectedCategory.value?.value){
             this.selectedCategory.value = null
             this.scrollTabPosition.value = 0
+            this.page.value = 1
+            onChangedRecipeResultPosition(0)
         }
         val newCategory = getFoodCategory(query.value)
         if (newCategory != null){
